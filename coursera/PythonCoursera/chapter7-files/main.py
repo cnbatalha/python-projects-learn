@@ -7,3 +7,8 @@ Created on 19/02/2016
 print 'Files'
 
 fhand = open('file.txt')
+
+for linha in fhand:
+    print linha
+    if linha.startswith('linha'):
+        print 'achou'
