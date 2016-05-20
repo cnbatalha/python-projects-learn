@@ -13,3 +13,4 @@ number = re.findall('[0-9]+', strNumber)
 
 for num in number:
     print num
+    
