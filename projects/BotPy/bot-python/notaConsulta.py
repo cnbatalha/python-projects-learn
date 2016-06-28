@@ -4,12 +4,14 @@ Created on 24/05/2016
 @author: Carlos
 '''
 
+import re
 import firebaseConnect
 import mechanize
+import time
 from BeautifulSoup import BeautifulSoup
 from _socket import timeout
 
-def consulta( chave):
+def getLogin():
     timeout = 5000
     data = ""
     
@@ -26,14 +28,80 @@ def consulta( chave):
     print 'Efetuando login' 
     
     br.select_form("AutenticarUsuarioForm")
-    br.form["cnpj"] = ""
-    br.form["senha"] = ""
     
     respSubmit = br.submit()
     
     print respSubmit.code
     print 'Login efetuado'
     # print respSubmit.get_data()
+    
+    return br
+    
+def consultaPIN(periodo):
+    br = getLogin()
+
+    ''' acessando link de consulta PIN
+    '''
+    print 'Acessando tela de consulta - PIN'
+    respNota = br.open("/PMNRecEViewController/prepararConsultaSituacaoPinAction.do?metodo=preparar")
+    
+    print respNota.code
+    #print respNota.get_data()
+    
+    br.select_form("ConsultaResultPINForm")
+    #br.form["numeroNotaFiscal"] = ""
+    br.form["dataInicial"] = '20/05/2016'
+    br.form["dataFinal"] = '28/05/2016'
+    respConsulta = br.submit()
+
+    # print respConsulta.get_data()
+    
+    soup = BeautifulSoup(respConsulta.get_data())
+    table = soup.find(id="tbPinsResult")   
+    
+    # carregando lista de PINs
+    PINs = list()     
+    for row in table.findAll('tr')[1:]:
+        col = row.findAll('td')
+        pin = col[0]
+        print pin.text
+        PINs.append(pin.text)
+     
+    # consultando pin individual   
+    for pin in PINs:      
+        consultaNotasPIN(br, pin)
+            
+    return ''
+
+def consultaNotasPIN( br, pin):
+    print 'Acessando tela de consulta - PIN'
+    respNota = br.open("/PMNRecEViewController/prepararConsultaSituacaoPinAction.do?metodo=preparar")    
+    print respNota.code
+    #print respNota.get_data()
+    
+    br.select_form("ConsultaResultPINForm")
+    #br.form["numeroNotaFiscal"] = ""
+    br.form["dataInicial"] = '20/05/2016'
+    br.form["dataFinal"] = '28/05/2016'
+    respConsulta = br.submit()
+
+    respNota = br.open("/PMNRecEViewController/prepararConsultaSituacaoPinAction.do?metodo=visualizarDados&idPIN=" + pin)
+    
+    print respNota.code
+    print respNota.get_data()
+
+    soup = BeautifulSoup(respNota.get_data())
+    table = soup.find(id="tbNotasFiscaisEletronicas")
+    # print table
+            
+    print "processando retorno"    
+    headers = [item.text for item in table('th')]
+    saveNotas(table, 0)
+    br.back()
+    time.sleep(3)
+        
+def consulta( chave):
+    br = getLogin()
     
     ''' acessando link de consulta de nota fiscal
     '''
@@ -60,34 +128,35 @@ def consulta( chave):
     soup = BeautifulSoup(respConsulta.get_data())
     table = soup.find(id="tbNotasFiscaisEletronicas")
     # print table
-    
-    
-    print "processando retorno"
-    
+            
+    print "processando retorno"    
     headers = [item.text for item in table('th')]
+    saveNotas(table, 1)
+    
+        
+def saveNotas(table, colIndex):
     
     dados = dict()
     
     for row in table.findAll('tr')[1:]:
         col = row.findAll('td')
-        lote = col[1].string
+        lote = col[colIndex].string
         dados['lote'] = lote
         print 'Lote: ', lote
-        chaveAcesso = col[2].string
+        colIndex = colIndex + 1
+        chaveAcesso = col[colIndex].string
         dados['chave'] = chaveAcesso
         print 'Chave de Acesso', chaveAcesso
-        dataProcessamento = col[3].string
+        colIndex = colIndex + 1
+        dataProcessamento = col[colIndex].string
         dados['dataProcessamento'] = dataProcessamento
         print 'Data de Processamento', dataProcessamento
-        situacao = col[4].string
+        colIndex = colIndex + 1
+        situacao = col[colIndex].string
         dados['situacao'] = situacao
         print 'Situacao', situacao
+        dados['dataCadastro'] = time.strftime('%d/%m/%Y')
         
         firebaseConnect.post('notas/', dados)
-        # record = (lote, chaveAcesso, dataProcessamento, situacao)
-        # print "|".join(record)
-    
-    #for row in table('tr')[1:]:
-    #    params = [item.text.strip() for item in row('td')]
-    #    print dict(zip(headers, params))
 
+    
