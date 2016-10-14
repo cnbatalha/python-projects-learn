@@ -5,6 +5,8 @@ from . import views
 urlpatterns = [
     # /pools/
     url(r'^$', views.index, name='index'),
+    # /pools/without
+    url(r'^without/$', views.without, name='without'),    
     # /pools/5/
     url(r'^(?P<question_id>[0-9]+)/$', views.detail, name='detail'),
     # /pools/5/results/
