@@ -1,0 +1,38 @@
+{% load staticfiles %}
+<html>
+<head>
+<link rel="stylesheet"
+	href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
+<body>
+
+	<div class="content container">
+		{% if latest_question_list %}
+		<table class="table">
+			<thead>
+				<th>Matéria</th>
+				<th>Grau de Conhecimento</th>
+				<th>Aproveitamento</th>
+			</thead>
+			{% for question in latest_question_list %}
+			<tbody>
+				<td><a href="{% url 'polls:detail' question.id %}">{{ question.nome }}</a></td>
+				<td>{{ question.grau_conhecimento }}</td>
+				<td>{{ question.aproveitamento }}</td>
+			</tbody>
+			{% endfor %}
+		</table>
+
+		<ul class="table">
+			{% for question in latest_question_list %}
+			<li><a href="{% url 'polls:detail' question.id %}">{{ question.nome }}</a></li> {% endfor %}
+		</ul>
+		{% else %}
+		<p>No polls are available.</p>
+		{% endif %}
+	</div>
+
+</body>
+</html>

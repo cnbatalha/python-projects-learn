@@ -5,10 +5,9 @@ from django.views import generic
 from django.template import loader
 from django.urls import reverse
 
-from dns.rdatatype import NULL
+from .models import Materia
 
 # Create your views here.
-
 
 class IndexView(generic.ListView):
     template_name = 'estudos/index.html'
@@ -16,5 +15,9 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published questions."""
-        # return Question.objects.order_by('-pub_date')[:5]
-        return ""
+        return Materia.objects.order_by('-nome')[:5]
+    
+def without(request):
+    latest_question_list = Materia.objects.order_by('-nome')[:5]
+    output = ', '.join([q.nome for q in latest_question_list])
+    return HttpResponse(output)

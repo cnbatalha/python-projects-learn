@@ -14,4 +14,15 @@ class Materia(models.Model):
     percentual = models.FloatField()
     aproveitamento = models.FloatField()
     
+    def __str__(self):
+        return self.nome
 
+
+class Topico(models.Model):
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
+    descricao = models.CharField(max_length=200)
+    peso = models.IntegerField(default=0)
+    aproveitamento = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return self.descricao

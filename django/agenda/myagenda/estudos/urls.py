@@ -7,7 +7,7 @@ urlpatterns = [
     # /pools/
     url(r'^$', views.IndexView.as_view(), name='index'),
     # /pools/without
-    #url(r'^without/$', views.without, name='without'),    
+    url(r'^without/$', views.without, name='without'),    
     # /pools/5/.
     #url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     # /pools/5/results/
