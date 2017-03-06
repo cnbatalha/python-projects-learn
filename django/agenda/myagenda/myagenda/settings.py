@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'estudos.apps.EstudosConfig',
     'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
