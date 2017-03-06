@@ -21,3 +21,8 @@ def without(request):
     latest_question_list = Materia.objects.order_by('-nome')[:5]
     output = ', '.join([q.nome for q in latest_question_list])
     return HttpResponse(output)
+
+
+class DetailView(generic.DetailView):
+    model = Materia
+    template_name = 'estudos/detail.html'

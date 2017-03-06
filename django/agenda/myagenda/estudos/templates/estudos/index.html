@@ -18,20 +18,13 @@
 			</thead>
 			{% for question in latest_question_list %}
 			<tbody>
-				<td><a href="{% url 'polls:detail' question.id %}">{{ question.nome }}</a></td>
+				<td><a href="{% url 'estudos:detail' question.id %}">{{ question.nome }}</a></td>
 				<td>{{ question.grau_conhecimento }}</td>
 				<td>{{ question.aproveitamento }}</td>
 			</tbody>
 			{% endfor %}
 		</table>
-
-		<ul class="table">
-			{% for question in latest_question_list %}
-			<li><a href="{% url 'polls:detail' question.id %}">{{ question.nome }}</a></li> {% endfor %}
-		</ul>
-		{% else %}
-		<p>No polls are available.</p>
-		{% endif %}
+		
 	</div>
 
 </body>
