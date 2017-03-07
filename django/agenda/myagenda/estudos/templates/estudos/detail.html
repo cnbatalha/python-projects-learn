@@ -16,6 +16,8 @@
 	{% for topico in materia.topico_set.all %}
 	<tbody>
 		<td>{{ topico.descricao }}</td>
+		<td>{{ topico.peso }}</td>
+		<td>{{ topico.aproveitamento }}</td>
 	</tbody>
 	{% endfor %}	
 </table>

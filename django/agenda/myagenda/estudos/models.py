@@ -16,6 +16,10 @@ class Materia(models.Model):
     
     def __str__(self):
         return self.nome
+    
+    #def topicos_total(self):
+    #    return self.topico_set
+        
 
 
 class Topico(models.Model):
@@ -26,3 +30,13 @@ class Topico(models.Model):
     
     def __str__(self):
         return self.descricao
+    
+    
+class FlashCard(models.Model):
+    materia = models.ForeignKey(Materia, on_delete=models.CASCADE)
+    pergunta = models.CharField(max_length=200)
+    resposta = models.CharField(max_length=200)
+        
+    def __str__(self):
+        return self.pergunta
+            

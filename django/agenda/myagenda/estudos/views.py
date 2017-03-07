@@ -6,6 +6,7 @@ from django.template import loader
 from django.urls import reverse
 
 from .models import Materia
+from django.template.context_processors import request
 
 # Create your views here.
 
@@ -22,7 +23,19 @@ def without(request):
     output = ', '.join([q.nome for q in latest_question_list])
     return HttpResponse(output)
 
-
 class DetailView(generic.DetailView):
     model = Materia
     template_name = 'estudos/detail.html'
+    
+def update(request, materia_id):
+    materia = get_object_or_404(Materia, pk=materia_id)
+    total = 0
+    for topico in materia.topico_set.all():
+        total += 1        
+        
+    materia.topicos = total
+    materia.save()
+    
+    return HttpResponseRedirect(reverse('estudos:index'))
+    
+    

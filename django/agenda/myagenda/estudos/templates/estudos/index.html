@@ -15,16 +15,22 @@
 				<th>Matéria</th>
 				<th>Grau de Conhecimento</th>
 				<th>Aproveitamento</th>
+				<th>Topicos</th>
 			</thead>
 			{% for question in latest_question_list %}
 			<tbody>
 				<td><a href="{% url 'estudos:detail' question.id %}">{{ question.nome }}</a></td>
 				<td>{{ question.grau_conhecimento }}</td>
 				<td>{{ question.aproveitamento }}</td>
+				<td>{{ question.topicos }}</td>
+				<td><a href="{% url 'estudos:update' question.id %}">ATUALIZAR</a></td>
 			</tbody>
 			{% endfor %}
 		</table>
-		
+		{% else %}
+		<p>No polls are available.</p>
+		{% endif %}
+
 	</div>
 
 </body>
